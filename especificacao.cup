@@ -11,109 +11,142 @@ parser code {:
 init with {: s.init(); :};
 scan with {: return s.next_token(); :};
 
-/* Terminals (tokens returned by the scanner). */
-terminal            EXPRESSION_END SQUARE_BRACKET_OPEN SQUARE_BRACKET_CLOSE PARENTHESES_OPEN PARENTHESES_CLOSE CURLY_BRACKET_OPEN CURLY_BRACKET_CLOSE
-terminal            ADDITION SUBTRACTION MULTIPLICATION DIVISION GREATER_THAN LESSER_THAN
-terminal            EQ EQEQ AND OR XOR NOT
+/* terminais. */
+terminal            COMMA, SEMICOLON, SQUARE_BRACKET_OPEN, SQUARE_BRACKET_CLOSE, PARENTHESES_OPEN, PARENTHESES_CLOSE, CURLY_BRACKET_OPEN, CURLY_BRACKET_CLOSE;
+terminal            ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION, GREATER_THAN, LESS_THAN;
+terminal            EQ, EQEQ, AND, OR, XOR, NOT;
 terminal            INTEGER_KEYWORD, BOOLEAN_KEYWORD, CHARACTER_KEYWORD, FLOAT_KEYWORD;
-terminal            IF ELSE WHILE FOR PRINT SCAN
-terminal            BOOLEAN IDENTIFIER INTEGER;
+terminal            IF, ELSE, WHILE, FOR, PRINT, SCAN;
+terminal            FLOAT, BOOLEAN, INTEGER, CHAR;
+terminal            IDENTIFIER;
+terminal            CONTINUE, BREAK, RETURN;
 
 /* Non terminals */
-non terminal            expr_list;
-non terminal Integer    expr;      // used to store evaluated subexpressions
+non terminal           string;
+non terminal           especificador_tipo;
+non terminal           declaracao, expressao, expressao_atribuicao;
+non terminal           operador_atribuicao, operador_aritmetica, constante;
+non terminal           expressao_condicional, expressao_primaria;
+non terminal           expressao_or, expressao_and, expressao_xor,expressao_equalidade,expressao_relacional;
+non terminal           expressao_aditiva,expressao_multiplicativa;
+non terminal           instrucao, instrucao_if, instrucao_iterativa, instrucao_pulo, instrucao_composta;
+non terminal           comando, comando_print, comando_scan;
 
 /* Precedences */
-precedence left PLUS, MINUS;
-precedence left TIMES;
-precedence left UMINUS;
+precedence left XOR;
+precedence left AND, ADDITION, SUBTRACTION;
+precedence left OR, MULTIPLICATION, DIVISION;
+precedence nonassoc NOT, LESS_THAN, GREATER_THAN, EQEQ;
 
-/* The grammar rules */
-<especificador_tipo> ::= "int" | "integer"
-           | "float" 
-           | "char" 
-           | "bool" | "boolean"
+/* Regras */
+especificador_tipo ::= INTEGER_KEYWORD
+                       | FLOAT_KEYWORD
+                       | CHARACTER_KEYWORD
+                       | BOOLEAN_KEYWORD
+                       ;
 
-<declaracao> ::= <especificador_tipo> <identificador> 
-    	         | <especificador_tipo> <identificador> "[" <inteiro> "]"
+declaracao ::= especificador_tipo IDENTIFIER 
+    	       | especificador_tipo IDENTIFIER SQUARE_BRACKET_OPEN INTEGER SQUARE_BRACKET_CLOSE
+               ;
 
-<identificador>  ::= <letra> <caractere>*
+expressao ::= expressao_atribuicao 
+		      | expressao COMMA expressao_atribuicao 
+              ;
 
-<expressao> ::= <expressao_atribuicao> 
-		  | <expressao> "," <expressao_atribuicao> 
+expressao_atribuicao ::= expressao_condicional 
+                         | IDENTIFIER operador_atribuicao expressao_atribuicao
+                         ;
 
-<expressao_atribuicao> ::= <expressao_condicional> | <identificador> <operador_atribuicao> <expressao_atribuicao>
+operador_atribuicao ::= EQ
+                      | operador_aritmetica EQ 
+                      ;
 
-/*constantes*/
+constante ::= CHAR 
+              | INTEGER 
+              | FLOAT 
+              | BOOLEAN
+              ;
+                
+expressao_condicional ::= expressao_or ;
 
-<constante> ::= <caractere> | <inteiro> | <numero_real>
-<letra> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
-<digito> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
-<caractere> ::= <letra> | <digito>
-<inteiro> ::= <digito> | <inteiro> <digito>
-<numero_real> ::=  <inteiro> "."  <inteiro> | "." <inteiro>
+expressao_or ::= expressao_and
+				 | expressao_or OR expressao_and
+                 ;
 
-/*Operadores*/
+expressao_and ::= expressao_xor
+			      | expressao_and AND expressao_xor
+                  ;
 
-<operador_atribuicao> ::= "=" | "+=" | "-=" | "*=" | "/="
+expressao_xor ::= expressao_equalidade
+				  | expressao_xor XOR expressao_equalidade
+                  ;
 
-/* expressões */
-	
-<expressao_condicional> ::= <expressao_or> 
+expressao_equalidade ::= expressao_relacional
+                         | expressao_equalidade EQEQ expressao_relacional
+                         | expressao_equalidade NOT EQ expressao_relacional
+                         ;
 
-<expressao_or> ::= <expressao_and>
-				 | <expressao_or> "||" <expressao_and>
+expressao_relacional ::= expressao_aditiva
+                         | expressao_relacional LESS_THAN expressao_aditiva
+                         | expressao_relacional GREATER_THAN expressao_aditiva
+                         | expressao_relacional LESS_THAN EQ expressao_aditiva
+                         | expressao_relacional GREATER_THAN EQ expressao_aditiva
+                         ;
 
-<expressao_and> ::= <expressao_xor>
-			      | <expressao_and> "&&" <expressao_xor>
+expressao_aditiva ::= expressao_multiplicativa
+                      | expressao_aditiva ADDITION expressao_multiplicativa
+                      | expressao_aditiva SUBTRACTION expressao_multiplicativa
+                      ;
 
-<expressao_xor> ::= <expressao_equalidade>
-				  | <expressao_xor> "^" <expressao_equalidade>
+expressao_multiplicativa ::= expressao_primaria
+                             | expressao_multiplicativa MULTIPLICATION expressao_primaria
+                             | expressao_multiplicativa DIVISION expressao_primaria
+                             ;
 
-<expressao_equalidade> ::= <expressao_relacional>
-                        | <expressao_equalidade> "==" <expressao_relacional>
-                        | <expressao_equalidade> "!=" <expressao_relacional>
+expressao_primaria ::= IDENTIFIER
+                       | constante
+                       ;
+/*adaptado de "instrucao_composta ::= declaracao* instrucao*" verificar equivalencia dps */
+instrucao_composta ::= instrucao_composta
+                     | declaracao instrucao_composta
+                     | instrucao_composta instrucao
+                     ;
 
-<expressao_relacional> ::= <expressao_aditiva>
-                          | <expressao_relacional> "<" <expressao_aditiva>
-                          | <expressao_relacional> ">" <expressao_aditiva>
-                          | <expressao_relacional> "<=" <expressao_aditiva>
-                          | <expressao_relacional> ">=" <expressao_aditiva>
+instrucao ::= instrucao_composta
+              | instrucao_if
+              | instrucao_iterativa
+              | instrucao_pulo
+		      | comando
+              ;
 
-<expressao_aditiva> ::= <expressao_multiplicativa>
-                        | <expressao_aditiva> "+" <expressao_multiplicativa>
-                        | <expressao_aditiva> "-" <expressao_multiplicativa>
+operador_aritmetica ::= ADDITION 
+                      | SUBTRACTION 
+                      | MULTIPLICATION
+                      | DIVISION 
+                      ;
 
-<expressao_multiplicativa> ::= <expressao_primaria>
-                              | <expressao_multiplicativa> "*" <expressao_primaria>
-                              | <expressao_multiplicativa> "/" <expressao_primaria>
+instrucao_if ::= IF PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE instrucao;
 
-<expressao_primaria> ::= <identificador>
-                       | <constante>
-                       
-<instrucao_composta> ::= <declaracao>* <instrucao>*
+/*aqui o for aparece 4x porque o expressao condicional e expressao sao opcionais*/
+instrucao_iterativa ::= WHILE PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE instrucao
+                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON expressao_condicional SEMICOLON  expressao PARENTHESES_CLOSE instrucao
+                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON expressao_condicional SEMICOLON  PARENTHESES_CLOSE instrucao
+                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON  SEMICOLON expressao PARENTHESES_CLOSE instrucao
+                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON  SEMICOLON  PARENTHESES_CLOSE instrucao
+                        ;
 
-<instrucao> ::= <instrucao_composta>
-              | <instrucao_if>
-              | <instrucao_iterativa>
-              | <instrucao_pulo>
-		  | <comando>
+comando ::= comando_print | comando_scan ;
 
+comando_print ::= PRINT PARENTHESES_OPEN IDENTIFIER PARENTHESES_CLOSE SEMICOLON
+			      | PRINT PARENTHESES_OPEN string PARENTHESES_CLOSE SEMICOLON
+                  ;
 
-<instrucao_if> ::= "if" "(" <expressao_condicional> ")" <instrucao>
+string ::= CHAR string ;
 
-<instrucao_iterativa> ::= "while" "(" <expressao_condicional> ")" <instrucao>
-| "for" "(" <expressao_atribuicao> ";" <expressao_condicional>? ";"  <expressao> ")" <instrucao>
+comando_scan ::= SCAN PARENTHESES_OPEN IDENTIFIER PARENTHESES_CLOSE SEMICOLON ;
 
-
-<comando> ::= <comando_print> | <comando_scan>
-
-<comando_print> ::= "print" "(" <caractere>* ")" ";" 
-			      | "print" "(" <identificador> ")" ";" 
-
-<comando_scan> ::= "scan" "(" <identificador> ")" ";"
-
-<instrucao_pulo> ::= "continue" ";"
-                   | "break" ";"
-                   | "return" <expressao> ";"
+instrucao_pulo ::= CONTINUE SEMICOLON
+                   | BREAK SEMICOLON
+                   | RETURN expressao SEMICOLON
+                   ;
 
