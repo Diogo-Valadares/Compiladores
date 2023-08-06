@@ -2,6 +2,7 @@ import java_cup.runtime.*;
 
 %%
 
+%cup
 %standalone
 %class lexAnalyzer
 %line
@@ -32,7 +33,7 @@ boolean = true | false
 "int" "eger"? {return symbol(sym.INTEGER_KEYWORD);}
 "bool" "ean"? {return symbol(sym.BOOLEAN_KEYWORD);}
 "char" {return symbol(sym.CHARACTER_KEYWORD);}
-
+"float" {return symbol(sym.FLOAT);}
 
 //logical operators
 "=" {return symbol(sym.EQ);}
@@ -48,10 +49,11 @@ boolean = true | false
 "*" {return symbol(sym.MULTIPLICATION);}
 "/" {return symbol(sym.DIVISION);}
 ">" {return symbol(sym.GREATER_THAN);}
-"<" {return symbol(sym.LESSER_THAN);}
+"<" {return symbol(sym.LESS_THAN);}
 
 //symbols
-";" {return symbol(sym.EXPRESSION_END);}
+"," {return symbol(sym.COMMA);}
+";" {return symbol(sym.SEMICOLON);}
 "[" {return symbol(sym.SQUARE_BRACKET_OPEN);}
 "]" {return symbol(sym.SQUARE_BRACKET_CLOSE);}
 "(" {return symbol(sym.PARENTHESES_OPEN);}
