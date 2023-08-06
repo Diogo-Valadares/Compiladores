@@ -29,14 +29,91 @@ precedence left TIMES;
 precedence left UMINUS;
 
 /* The grammar rules */
-expr_list ::= expr_list expr:e SEMI         {: System.out.println(e);:}
-            | expr:e SEMI                   {: System.out.println(e);:}
-;
-expr      ::= expr:e1 PLUS  expr:e2         {: RESULT = e1+e2;       :}
-             | expr:e1 MINUS expr:e2        {: RESULT = e1-e2;       :}
-             | expr:e1 TIMES expr:e2        {: RESULT = e1*e2;       :}
-             | MINUS expr:e                 {: RESULT = -e;          :}
-  	     %prec UMINUS
-       | LPAREN expr:e RPAREN	         {: RESULT = e;           :}
-       | NUMBER:n	                     {: RESULT = n;           :}
-             ;
+<especificador_tipo> ::= "int" | "integer"
+           | "float" 
+           | "char" 
+           | "bool" | "boolean"
+
+<declaracao> ::= <especificador_tipo> <identificador> 
+    	         | <especificador_tipo> <identificador> "[" <inteiro> "]"
+
+<identificador>  ::= <letra> <caractere>*
+
+<expressao> ::= <expressao_atribuicao> 
+		  | <expressao> "," <expressao_atribuicao> 
+
+<expressao_atribuicao> ::= <expressao_condicional> | <identificador> <operador_atribuicao> <expressao_atribuicao>
+
+/*constantes*/
+
+<constante> ::= <caractere> | <inteiro> | <numero_real>
+<letra> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+<digito> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<caractere> ::= <letra> | <digito>
+<inteiro> ::= <digito> | <inteiro> <digito>
+<numero_real> ::=  <inteiro> "."  <inteiro> | "." <inteiro>
+
+/*Operadores*/
+
+<operador_atribuicao> ::= "=" | "+=" | "-=" | "*=" | "/="
+
+/* expressões */
+	
+<expressao_condicional> ::= <expressao_or> 
+
+<expressao_or> ::= <expressao_and>
+				 | <expressao_or> "||" <expressao_and>
+
+<expressao_and> ::= <expressao_xor>
+			      | <expressao_and> "&&" <expressao_xor>
+
+<expressao_xor> ::= <expressao_equalidade>
+				  | <expressao_xor> "^" <expressao_equalidade>
+
+<expressao_equalidade> ::= <expressao_relacional>
+                        | <expressao_equalidade> "==" <expressao_relacional>
+                        | <expressao_equalidade> "!=" <expressao_relacional>
+
+<expressao_relacional> ::= <expressao_aditiva>
+                          | <expressao_relacional> "<" <expressao_aditiva>
+                          | <expressao_relacional> ">" <expressao_aditiva>
+                          | <expressao_relacional> "<=" <expressao_aditiva>
+                          | <expressao_relacional> ">=" <expressao_aditiva>
+
+<expressao_aditiva> ::= <expressao_multiplicativa>
+                        | <expressao_aditiva> "+" <expressao_multiplicativa>
+                        | <expressao_aditiva> "-" <expressao_multiplicativa>
+
+<expressao_multiplicativa> ::= <expressao_primaria>
+                              | <expressao_multiplicativa> "*" <expressao_primaria>
+                              | <expressao_multiplicativa> "/" <expressao_primaria>
+
+<expressao_primaria> ::= <identificador>
+                       | <constante>
+                       
+<instrucao_composta> ::= <declaracao>* <instrucao>*
+
+<instrucao> ::= <instrucao_composta>
+              | <instrucao_if>
+              | <instrucao_iterativa>
+              | <instrucao_pulo>
+		  | <comando>
+
+
+<instrucao_if> ::= "if" "(" <expressao_condicional> ")" <instrucao>
+
+<instrucao_iterativa> ::= "while" "(" <expressao_condicional> ")" <instrucao>
+| "for" "(" <expressao_atribuicao> ";" <expressao_condicional>? ";"  <expressao> ")" <instrucao>
+
+
+<comando> ::= <comando_print> | <comando_scan>
+
+<comando_print> ::= "print" "(" <caractere>* ")" ";" 
+			      | "print" "(" <identificador> ")" ";" 
+
+<comando_scan> ::= "scan" "(" <identificador> ")" ";"
+
+<instrucao_pulo> ::= "continue" ";"
+                   | "break" ";"
+                   | "return" <expressao> ";"
+
