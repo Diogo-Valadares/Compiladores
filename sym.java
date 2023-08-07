@@ -11,7 +11,7 @@ public class sym {
   public static final int CHARACTER_KEYWORD = 24;
   public static final int XOR = 20;
   public static final int INTEGER = 34;
-  public static final int CONTINUE = 37;
+  public static final int CONTINUE = 38;
   public static final int PARENTHESES_OPEN = 6;
   public static final int FOR = 29;
   public static final int GREATER_THAN = 14;
@@ -26,13 +26,13 @@ public class sym {
   public static final int SQUARE_BRACKET_CLOSE = 5;
   public static final int EOF = 0;
   public static final int BOOLEAN = 33;
-  public static final int RETURN = 39;
+  public static final int RETURN = 40;
   public static final int error = 1;
   public static final int CURLY_BRACKET_CLOSE = 9;
   public static final int SQUARE_BRACKET_OPEN = 4;
   public static final int EQEQ = 17;
   public static final int PARENTHESES_CLOSE = 7;
-  public static final int BREAK = 38;
+  public static final int BREAK = 39;
   public static final int EQ = 16;
   public static final int ELSE = 27;
   public static final int CURLY_BRACKET_OPEN = 8;
@@ -41,11 +41,12 @@ public class sym {
   public static final int ADDITION = 10;
   public static final int FLOAT = 32;
   public static final int INTEGER_KEYWORD = 22;
+  public static final int STRING = 36;
   public static final int DIVISION = 13;
   public static final int LESS_THAN = 15;
   public static final int MULTIPLICATION = 12;
   public static final int PRINT = 30;
-  public static final int IDENTIFIER = 36;
+  public static final int IDENTIFIER = 37;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -83,6 +84,7 @@ public class sym {
   "BOOLEAN",
   "INTEGER",
   "CHAR",
+  "STRING",
   "IDENTIFIER",
   "CONTINUE",
   "BREAK",

@@ -3,16 +3,9 @@ import java_cup.runtime.*;
 
 parser code {:
     public void syntax_error(java_cup.runtime.Symbol currToken) {
-        System.out.println("Erro de sintaxe na linha: "+(currToken.left+1)+" caracter: " +(currToken.right+1));
+        System.out.println("Erro de sintaxe na linha: "+(currToken.left+1)+" coluna: " +(currToken.right+1));
     }
-    // Connect this parser to a scanner!
-    //scanner s;
-    //Parser(scanner s){ this.s=s; }
 :}
-
-/* define how to connect to the scanner! */
-//init with {: s.init(); :};
-//scan with {: return s.next_token(); :};
 
 /* terminais. */
 terminal            COMMA, SEMICOLON, SQUARE_BRACKET_OPEN, SQUARE_BRACKET_CLOSE, PARENTHESES_OPEN, PARENTHESES_CLOSE, CURLY_BRACKET_OPEN, CURLY_BRACKET_CLOSE;
@@ -20,20 +13,19 @@ terminal            ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION, GREATER_THA
 terminal            EQ, EQEQ, AND, OR, XOR, NOT;
 terminal            INTEGER_KEYWORD, BOOLEAN_KEYWORD, CHARACTER_KEYWORD, FLOAT_KEYWORD;
 terminal            IF, ELSE, WHILE, FOR, PRINT, SCAN;
-terminal            FLOAT, BOOLEAN, INTEGER, CHAR;
+terminal            FLOAT, BOOLEAN, INTEGER, CHAR, STRING;//string é apenas usado no print
 terminal            IDENTIFIER;
 terminal            CONTINUE, BREAK, RETURN;
 
 /* Non terminals */
 non terminal           unidade_de_compilacao;
-non terminal           string;
 non terminal           especificador_tipo;
 non terminal           declaracao, expressao, expressao_atribuicao;
 non terminal           operador_atribuicao, operador_aritmetica, constante;
 non terminal           expressao_condicional, expressao_primaria;
 non terminal           expressao_or, expressao_and, expressao_xor,expressao_equalidade,expressao_relacional;
 non terminal           expressao_aditiva,expressao_multiplicativa;
-non terminal           instrucao, instrucao_if, instrucao_iterativa, instrucao_pulo, instrucao_composta;
+non terminal           instrucao, bloco_instrucao, instrucao_if, instrucao_iterativa, instrucao_pulo, instrucao_composta;
 non terminal           comando, comando_print, comando_scan;
 
 /* Precedences */
@@ -44,8 +36,10 @@ precedence nonassoc NOT, LESS_THAN, GREATER_THAN, EQEQ;
 
 /* Regras */
 
-unidade_de_compilacao ::= instrucao_composta unidade_de_compilacao
-                        | 
+unidade_de_compilacao ::= declaracao unidade_de_compilacao
+                        | instrucao unidade_de_compilacao
+                        | instrucao_composta unidade_de_compilacao
+                        |
                         ;
 
 especificador_tipo ::= INTEGER_KEYWORD
@@ -54,15 +48,15 @@ especificador_tipo ::= INTEGER_KEYWORD
                        | BOOLEAN_KEYWORD
                        ;
 
-declaracao ::= especificador_tipo IDENTIFIER 
-    	       | especificador_tipo IDENTIFIER SQUARE_BRACKET_OPEN INTEGER SQUARE_BRACKET_CLOSE
+declaracao ::= especificador_tipo IDENTIFIER SEMICOLON
+    	       | especificador_tipo IDENTIFIER SQUARE_BRACKET_OPEN INTEGER SQUARE_BRACKET_CLOSE SEMICOLON
                ;
 
 expressao ::= expressao_atribuicao 
 		      | expressao COMMA expressao_atribuicao 
               ;
 
-expressao_atribuicao ::= expressao_condicional 
+expressao_atribuicao ::= expressao_condicional SEMICOLON
                          | IDENTIFIER operador_atribuicao expressao_atribuicao
                          ;
 
@@ -115,12 +109,17 @@ expressao_multiplicativa ::= expressao_primaria
 expressao_primaria ::= IDENTIFIER
                        | constante
                        ;
-/*adaptado de "instrucao_composta ::= declaracao* instrucao*" verificar equivalencia dps */
-instrucao_composta ::= declaracao instrucao_composta  
-                     | instrucao instrucao_composta  
+/*adaptado de "instrucao_composta ::= { declaracao* instrucao* }" verificar equivalencia dps */
+instrucao_composta ::= CURLY_BRACKET_OPEN bloco_instrucao CURLY_BRACKET_CLOSE
                      ;
 
-instrucao ::= instrucao_if
+bloco_instrucao ::= /* empty */
+                  | declaracao bloco_instrucao
+                  | instrucao bloco_instrucao
+                  ;
+
+instrucao ::= expressao
+              | instrucao_if
               | instrucao_iterativa
               | instrucao_pulo
 		      | comando
@@ -132,29 +131,30 @@ operador_aritmetica ::= ADDITION
                       | DIVISION 
                       ;
 
-instrucao_if ::= IF PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE CURLY_BRACKET_OPEN instrucao_composta CURLY_BRACKET_CLOSE
-               | IF PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE CURLY_BRACKET_OPEN instrucao_composta CURLY_BRACKET_CLOSE ELSE CURLY_BRACKET_OPEN instrucao_composta CURLY_BRACKET_CLOSE;
+instrucao_if ::= IF PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE instrucao_composta
+               | IF PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE instrucao_composta ELSE instrucao_composta
+               ;
 
 /*aqui o for aparece 4x porque o expressao condicional e expressao sao opcionais*/
-instrucao_iterativa ::= WHILE PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE CURLY_BRACKET_OPEN instrucao_composta CURLY_BRACKET_CLOSE
-                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON expressao_condicional SEMICOLON expressao PARENTHESES_CLOSE CURLY_BRACKET_OPEN instrucao_composta CURLY_BRACKET_CLOSE
-                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON expressao_condicional SEMICOLON PARENTHESES_CLOSE CURLY_BRACKET_OPEN instrucao_composta CURLY_BRACKET_CLOSE
-                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON  SEMICOLON expressao PARENTHESES_CLOSE CURLY_BRACKET_OPEN instrucao_composta CURLY_BRACKET_CLOSE
-                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON  SEMICOLON PARENTHESES_CLOSE CURLY_BRACKET_OPEN instrucao_composta CURLY_BRACKET_CLOSE
+instrucao_iterativa ::= WHILE PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE instrucao_composta
+                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON expressao_condicional SEMICOLON expressao PARENTHESES_CLOSE instrucao_composta
+                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON expressao_condicional SEMICOLON PARENTHESES_CLOSE instrucao_composta
+                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON SEMICOLON expressao PARENTHESES_CLOSE instrucao_composta
+                        | FOR PARENTHESES_OPEN expressao_atribuicao SEMICOLON SEMICOLON PARENTHESES_CLOSE instrucao_composta
                         ;
-
-comando ::= comando_print | comando_scan ;
-
-comando_print ::= PRINT PARENTHESES_OPEN CURLY_BRACKET_OPEN IDENTIFIER CURLY_BRACKET_CLOSE PARENTHESES_CLOSE SEMICOLON
-			      | PRINT PARENTHESES_OPEN string PARENTHESES_CLOSE SEMICOLON
-                  ;
-
-string ::= CHAR string ;
-
-comando_scan ::= SCAN PARENTHESES_OPEN IDENTIFIER PARENTHESES_CLOSE SEMICOLON ;
-
+                        
 instrucao_pulo ::= CONTINUE SEMICOLON
                    | BREAK SEMICOLON
                    | RETURN expressao SEMICOLON
                    ;
+
+comando ::= comando_print | comando_scan ;
+
+comando_print ::= PRINT PARENTHESES_OPEN IDENTIFIER PARENTHESES_CLOSE SEMICOLON
+			      | PRINT PARENTHESES_OPEN STRING PARENTHESES_CLOSE SEMICOLON
+                  ;
+
+comando_scan ::= SCAN PARENTHESES_OPEN IDENTIFIER PARENTHESES_CLOSE SEMICOLON ;
+
+
 

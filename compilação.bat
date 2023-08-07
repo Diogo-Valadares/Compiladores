@@ -1,5 +1,5 @@
 @echo off
-echo Compilar Analizador léxico e sintatico
+echo Compilar Analizador lexico e sintatico
 pause
 call java -jar jflex-full-1.9.1.jar ./especificacao.flex
 pause
