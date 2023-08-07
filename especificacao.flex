@@ -2,10 +2,12 @@ import java_cup.runtime.*;
 
 %%
 
+%class scanner
+%unicode 
+
 %cup
-%standalone
-%class lexAnalyzer
 %line
+%column
 
 /*necessário para o analizador sintatico conseguir indicar onde esta o erro*/
 %{
