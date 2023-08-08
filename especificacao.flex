@@ -44,7 +44,7 @@ inteiro = 0 | [1-9][0-9]*
     "int" "eger"? {return symbol(sym.INTEGER_KEYWORD);}
     "bool" "ean"? {return symbol(sym.BOOLEAN_KEYWORD);}
     "char" {return symbol(sym.CHARACTER_KEYWORD);}
-    "float" {return symbol(sym.FLOAT);}
+    "float" {return symbol(sym.FLOAT_KEYWORD);}
 
     //logical operators
     "=" {return symbol(sym.EQ);}
