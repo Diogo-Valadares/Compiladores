@@ -125,8 +125,8 @@ instrucao ::= expressao
 		      | comando
               ;
 
-instrucao_if ::= IF PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE instrucao_composta {: System.out.println("Instrucao IF encontrado\n "); :}
-               | IF PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE instrucao_composta ELSE instrucao_composta {: System.out.println("Instrucao IF ELSE encontrado\n "); :}
+instrucao_if ::= IF PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE instrucao_composta {: System.out.println("Fim da Instrucao IF\n "); :}
+               | IF PARENTHESES_OPEN expressao_condicional PARENTHESES_CLOSE instrucao_composta ELSE instrucao_composta {: System.out.println("Fim da Instrucao IF ELSE\n "); :}
                ;
 
 /*aqui o for aparece 4x porque o expressao condicional e expressao sao opcionais*/
