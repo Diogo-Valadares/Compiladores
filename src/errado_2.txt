@@ -1,5 +1,6 @@
 int a;
-float 0.2;
-a = 5;
-scan (0.2);
-
+scan (a);
+int b;
+if(2 > a + b){
+	print(a);
+}

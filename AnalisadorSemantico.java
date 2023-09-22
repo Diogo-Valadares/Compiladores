@@ -4,20 +4,22 @@ public class AnalisadorSemantico {
 
 	private Hashtable<Object, Identificador> identificadores = new Hashtable<>();
 
+    //insere um identificador na tabela 
 	public String inserirSimbolo(Object variavel, TipoVariavel tipo) {
         if(identificadores.contains(variavel)){
-            System.out.println("Erro: Variável \"" + variavel + "\" já foi previamente declarada");
+            System.out.println("\n\nErro: Variável \"" + variavel + "\" já foi previamente declarada");
             return "ERRO SEMÂNTICO";
         }        
 		identificadores.put(variavel.toString(), new Identificador(tipo));
         return tipo.toString().toLowerCase() + " " + variavel + ";";
 	}
 
+    //obtem um identificador da tabela
     public Identificador obterIdentificador(Object variavel) {
         Identificador identificador = identificadores.get(variavel);
 
 		if (identificador == null) {
-			System.out.println(String.format("Erro: Variável \"" + variavel + "\" precisa ser declarada antes de ser usada."));
+			System.out.println(String.format("\n\nErro: Variável \"" + variavel + "\" precisa ser declarada antes de ser usada."));
 			return null;
 		} 
         return identificador;
@@ -29,18 +31,18 @@ public class AnalisadorSemantico {
         TipoVariavel tipo1;
         TipoVariavel tipo2;
         if(!identificadores.containsKey(variavel)) {
-            System.out.println("Erro: Variável \"" + variavel + "\" precisa ser declarada antes de ser usada.");
+            System.out.println("\n\nErro: Variável \"" + variavel + "\" precisa ser declarada antes de ser usada.");
             return null;
         }      
         tipo1 = identificadores.get(variavel).tipo;
               
 		if(valor.ehVariavel){
             if(!identificadores.containsKey(valor.resultado)){
-                System.out.println("Erro: Variável \"" + valor.resultado + "\" precisa ser declarada antes de ser usada.");
+                System.out.println("\n\nErro: Variável \"" + valor.resultado + "\" precisa ser declarada antes de ser usada.");
                 return null;
 		    }            
             if(!identificadores.get(valor.resultado).estaAtribuido){
-                System.out.println(String.format("Erro: Variável \"" + valor.resultado + "\" precisa ser atribuida antes de ser usada."));
+                System.out.println(String.format("\n\nErro: Variável \"" + valor.resultado + "\" precisa ser atribuida antes de ser usada."));
                 return null;
             }
             tipo2 = identificadores.get(valor.resultado).tipo;
@@ -52,16 +54,16 @@ public class AnalisadorSemantico {
         if(tipo1 != tipo2 && tipo1 != TipoVariavel.INT && tipo1 != TipoVariavel.FLOAT && tipo2 != TipoVariavel.INT && tipo2 != TipoVariavel.FLOAT){
             switch(tipo1){  
                 case BOOL:
-                    System.out.println(String.format("Erro: O tipo boolean da variável \"" + variavel + "\" só pode receber \"true\" ou \"false\" na atribuição"));
+                    System.out.println(String.format("\n\nErro: O tipo boolean da variável \"" + variavel + "\" só pode receber \"true\" ou \"false\" na atribuição"));
                     break;
                 case INT:
-                    System.out.println(String.format("Erro: O tipo inteiro da variável \"" + variavel + "\" só pode receber números inteiros na atribuição"));
+                    System.out.println(String.format("\n\nErro: O tipo inteiro da variável \"" + variavel + "\" só pode receber números inteiros na atribuição"));
                     break;
                 case FLOAT:
-                    System.out.println(String.format("Erro: O tipo float da variável \"" + variavel + "\" só pode receber números decimais na atribuição"));
+                    System.out.println(String.format("\n\nErro: O tipo float da variável \"" + variavel + "\" só pode receber números decimais na atribuição"));
                     break;
                 case CHAR:
-                    System.out.println(String.format("Erro: O tipo char da variável \"" + variavel + "\" só pode receber um caractere por vez"));
+                    System.out.println(String.format("\n\nErro: O tipo char da variável \"" + variavel + "\" só pode receber um caractere por vez"));
                     break;
             } 
         }        
@@ -79,11 +81,11 @@ public class AnalisadorSemantico {
         TipoVariavel tipo2;
         if(var1.ehVariavel){
             if(!identificadores.containsKey(var1.resultado)) {
-                System.out.println("Erro: Variável \"" + var1.resultado + "\" precisa ser declarada antes de ser usada.");
+                System.out.println("\n\nErro: Variável \"" + var1.resultado + "\" precisa ser declarada antes de ser usada.");
                 return null;
 		    }            
             if(!identificadores.get(var1.resultado).estaAtribuido){
-                System.out.println(String.format("Erro: Variável \"" + var1.resultado + "\" precisa ser atribuida antes de ser usada."));
+                System.out.println(String.format("\n\nErro: Variável \"" + var1.resultado + "\" precisa ser atribuida antes de ser usada."));
                 return null;
             }
             tipo1 = identificadores.get(var1.resultado).tipo;
@@ -93,11 +95,11 @@ public class AnalisadorSemantico {
         }
 		if(var2.ehVariavel){
             if(!identificadores.containsKey(var2.resultado)){
-                System.out.println("Erro: Variável \"" + var2.resultado + "\" precisa ser declarada antes de ser usada.");
+                System.out.println("\n\nErro: Variável \"" + var2.resultado + "\" precisa ser declarada antes de ser usada.");
                 return null;
 		    }            
             if(!identificadores.get(var2.resultado).estaAtribuido){
-                System.out.println(String.format("Erro: Variável \"" + var2.resultado + "\" precisa ser atribuida antes de ser usada."));
+                System.out.println(String.format("\n\nErro: Variável \"" + var2.resultado + "\" precisa ser atribuida antes de ser usada."));
                 return null;
             }
             tipo2 = identificadores.get(var2.resultado).tipo;
@@ -117,11 +119,11 @@ public class AnalisadorSemantico {
             case "*":
             case "/":
                 if(tipo1 == TipoVariavel.CHAR || tipo2 == TipoVariavel.CHAR){
-                    System.out.println("Erro: Operadores aritméticos não podem ser executados com o tipo char");
+                    System.out.println("\n\nErro: Operadores aritméticos não podem ser executados com o tipo char");
                     return null;
                 }
                 if(tipo1 == TipoVariavel.BOOL || tipo2 == TipoVariavel.BOOL){
-                    System.out.println("Erro: Operadores aritméticos não podem ser executados com o tipo bool");
+                    System.out.println("\n\nErro: Operadores aritméticos não podem ser executados com o tipo bool");
                     return null;
                 }
                 if(operador == "+" || operador == "-" || operador == "*" || operador == "/"){
@@ -131,7 +133,7 @@ public class AnalisadorSemantico {
             case "==":
             case "!=":
                 if(tipo1 != tipo2){
-                    System.out.println("Erro: É apenas possivel comparar variáveis de mesmo tipo(" + tipo1 + " != " + tipo2 +")");
+                    System.out.println("\n\nErro: É apenas possivel comparar variáveis de mesmo tipo(" + tipo1 + " != " + tipo2 +")");
                     return null;
                 }
                 break;
@@ -139,7 +141,7 @@ public class AnalisadorSemantico {
             case "||":
             case "^":
                 if(tipo1 != TipoVariavel.BOOL || tipo2 != TipoVariavel.BOOL){
-                    System.out.println("Erro: operadores lógicos só podem ser realizados entre tipos booleanos");
+                    System.out.println("\n\nErro: operadores lógicos só podem ser realizados entre tipos booleanos");
                     return null;
                 }
                 break;
@@ -164,7 +166,8 @@ public class AnalisadorSemantico {
         }
         return TipoVariavel.INT;
     }
-
+    
+    //obtem o caractere de um tipo, por exemplo float -> f. é usado na compilação de printf e scanf
     public char obterCharDoTipo(TipoVariavel tipo){
         switch(tipo){
             case BOOL:
