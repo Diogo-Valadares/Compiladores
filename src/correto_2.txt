@@ -1,9 +1,9 @@
 int a;
+a=3;
 scan(a);
 if(a==2){
- a=3;
- char b;
- b='a'; 
+ int b;
+ b=4; 
  bool c;
  c = a < b;
  if(c){

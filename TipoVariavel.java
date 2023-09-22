@@ -1,0 +1,1 @@
+public enum TipoVariavel{BOOL,INT,FLOAT,CHAR;}

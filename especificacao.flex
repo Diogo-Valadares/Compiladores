@@ -24,7 +24,7 @@ import java_cup.runtime.*;
 %}
 
 %eof{ 
- System.out.println("Codigo analisado com sucesso"); 
+  //System.out.println("Codigo analisado com sucesso"); 
 %eof}
 
 identifier = [:jletter:] ([:jletter:]|[:jletterdigit:])*
@@ -38,7 +38,7 @@ inteiro = 0 | [1-9][0-9]*
 %%
 
 <YYINITIAL> {
-    [\n] {System.out.println("");}
+    [\n] {}
 
     //types
     "int" "eger"? {return symbol(sym.INTEGER_KEYWORD);}
@@ -65,8 +65,6 @@ inteiro = 0 | [1-9][0-9]*
     //symbols
     "," {return symbol(sym.COMMA);}
     ";" {return symbol(sym.SEMICOLON);}
-    "[" {return symbol(sym.SQUARE_BRACKET_OPEN);}
-    "]" {return symbol(sym.SQUARE_BRACKET_CLOSE);}
     "(" {return symbol(sym.PARENTHESES_OPEN);}
     ")" {return symbol(sym.PARENTHESES_CLOSE);}
     "{" {return symbol(sym.CURLY_BRACKET_OPEN);}
@@ -82,11 +80,11 @@ inteiro = 0 | [1-9][0-9]*
 
     //literais uma parte foi tirado da documentação do jflex
     \" { string.setLength(0); yybegin(STRING); }
-    {boolean} {return symbol(sym.BOOLEAN);}
-    {inteiro} { return symbol(sym.INTEGER); }
-    {float} { return symbol(sym.FLOAT); }
-    "'"{char}"'" {return symbol(sym.CHAR);}
-    {identifier} {return symbol(sym.IDENTIFIER);}
+    {boolean} {return symbol(sym.BOOLEAN, yytext());}
+    {inteiro} { return symbol(sym.INTEGER, yytext()); }
+    {float} { return symbol(sym.FLOAT, yytext()); }
+    "'"{char}"'" {return symbol(sym.CHAR, yytext());}
+    {identifier} {return symbol(sym.IDENTIFIER, yytext());}
     [\t\r] { }
 }
 

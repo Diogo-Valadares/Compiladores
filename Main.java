@@ -21,10 +21,12 @@ class Main {
         else
           parse_tree = parser_obj.parse();
       } catch (Exception e) {
-          System.out.println("Erro");
+        System.out.println(e.getCause());
+        for (StackTraceElement stackElement : e.getStackTrace()) {
+          System.out.println(stackElement.getFileName() + "  " +stackElement.getMethodName() + "  " + stackElement.getLineNumber());
+        }          
       } finally {
 	/* do close out here */
-      }
+      } 
   }
 }
-
