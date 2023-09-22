@@ -8,8 +8,8 @@ scan (b);
 if (a < b){
 	r = a/b;
 } else {
-	c = b-d;
+	c = a;
 	a = c+b;
 	d = a*c;
-	r = a/b-d+ b * c;
+	r = a/b-d+b*c;
 }
