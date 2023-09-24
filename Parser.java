@@ -450,7 +450,7 @@ class CUP$Parser$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object r = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		if(r!=null){System.out.print(r);}
+		if(r!=null){Gerador.gravarArquivo(r.toString());}
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("unidade_de_compilacao",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -462,7 +462,7 @@ class CUP$Parser$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object r = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		if(r!=null){System.out.print(r);}
+		if(r!=null){Gerador.gravarArquivo(r.toString());}
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("unidade_de_compilacao",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -474,7 +474,7 @@ class CUP$Parser$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object r = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		if(r!=null){System.out.print(r);}
+		if(r!=null){Gerador.gravarArquivo(r.toString());}
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("unidade_de_compilacao",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -535,7 +535,7 @@ class CUP$Parser$actions {
 		int varright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Object var = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		     
-    RESULT = analisadorSemantico.inserirSimbolo(var, (TipoVariavel)tipo);
+    RESULT = analisadorSemantico.inserirSimbolo(var, (TipoVariavel)tipo, varleft, varright);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("declaracao",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -591,7 +591,7 @@ class CUP$Parser$actions {
 		int valorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object valor = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-    RESULT = analisadorSemantico.atribuirVariavel(var,(Expressao)valor);
+    RESULT = analisadorSemantico.atribuirVariavel(var,(Expressao)valor, varleft, varright);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_atribuicao",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -680,7 +680,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "||");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "||", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_or",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -709,7 +709,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "&&");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "&&", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_and",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -738,7 +738,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "^");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "^", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_xor",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -767,7 +767,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-        RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "==");
+        RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "==", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_equalidade",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -784,7 +784,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-        RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "!=");
+        RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "!=", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_equalidade",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -813,7 +813,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "<");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "<", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_relacional",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -830,7 +830,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, ">");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, ">", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_relacional",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -847,7 +847,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "<=");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "<=", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_relacional",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -864,7 +864,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, ">=");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, ">=", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_relacional",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -893,7 +893,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "+");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "+", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_aditiva",13, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -910,7 +910,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "-");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "-", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_aditiva",13, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -939,7 +939,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "*");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "*", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_multiplicativa",14, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -956,7 +956,7 @@ class CUP$Parser$actions {
 		int var2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object var2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		     
-    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "/");
+    RESULT = analisadorSemantico.testarExpressao((Expressao)var1, (Expressao)var2, "/", var1left, var1right, var2left, var2right);
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expressao_multiplicativa",14, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -1303,7 +1303,7 @@ class CUP$Parser$actions {
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		 
-    Identificador i = analisadorSemantico.obterIdentificador(id);
+    Identificador i = analisadorSemantico.obterIdentificador(id, idleft, idright);
     if(i!=null) i.estaAtribuido = true;
     RESULT = "scanf(\"%" + analisadorSemantico.obterCharDoTipo(analisadorSemantico.obterTipo(id)) + "\",&" + id.toString() + ");"; 
 

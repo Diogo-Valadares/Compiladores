@@ -1,0 +1,1 @@
+int a;int b;int c;int d;float r;a=5;scanf("%i",&b);

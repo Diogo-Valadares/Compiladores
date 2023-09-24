@@ -3,47 +3,53 @@ import java.util.*;
 public class AnalisadorSemantico {
 
 	private Hashtable<Object, Identificador> identificadores = new Hashtable<>();
+    private java_cup.runtime.Symbol currToken;
 
     //insere um identificador na tabela 
-	public String inserirSimbolo(Object variavel, TipoVariavel tipo) {
+	public String inserirSimbolo(Object variavel, TipoVariavel tipo, Object left, Object right) {
         if(identificadores.contains(variavel)){
-            System.out.println("\n\nErro: Variável \"" + variavel + "\" já foi previamente declarada");
-            return "ERRO SEMÂNTICO";
+            System.out.println("\n\nErro na linha "+left.toString()+" coluna "+right.toString()+": Variável \"" + variavel + "\" já foi previamente declarada");
+            throw new IllegalArgumentException("Erro", null);
+            //return "ERRO SEMÂNTICO";
         }        
 		identificadores.put(variavel.toString(), new Identificador(tipo));
         return tipo.toString().toLowerCase() + " " + variavel + ";";
 	}
 
     //obtem um identificador da tabela
-    public Identificador obterIdentificador(Object variavel) {
+    public Identificador obterIdentificador(Object variavel, Object left, Object right) {
         Identificador identificador = identificadores.get(variavel);
 
 		if (identificador == null) {
-			System.out.println(String.format("\n\nErro: Variável \"" + variavel + "\" precisa ser declarada antes de ser usada."));
-			return null;
+			System.out.println(String.format("\n\nErro na linha "+left.toString()+" coluna "+right.toString()+": Variável \"" + variavel + "\" precisa ser declarada antes de ser usada."));
+			throw new IllegalArgumentException("Erro", null);
+            //return null;
 		} 
         return identificador;
 	}
 	
     //tenta atribuir uma variavel, se der errado retorna "ERRO SEMANTICO"
     //se der certo retorna a atribuição
-	public String atribuirVariavel(Object variavel, Expressao valor) {
+	public String atribuirVariavel(Object variavel, Expressao valor, Object left, Object right) {
         TipoVariavel tipo1;
         TipoVariavel tipo2;
         if(!identificadores.containsKey(variavel)) {
-            System.out.println("\n\nErro: Variável \"" + variavel + "\" precisa ser declarada antes de ser usada.");
-            return null;
+            System.out.println("\n\nErro na linha "+left.toString()+" coluna "+right.toString()+": Variável \"" + variavel + "\" precisa ser declarada antes de ser usada.");
+            throw new IllegalArgumentException("Erro", null);
+            //return null;
         }      
         tipo1 = identificadores.get(variavel).tipo;
               
 		if(valor.ehVariavel){
             if(!identificadores.containsKey(valor.resultado)){
-                System.out.println("\n\nErro: Variável \"" + valor.resultado + "\" precisa ser declarada antes de ser usada.");
-                return null;
+                System.out.println("\n\nErro na linha "+left.toString()+" coluna "+right.toString()+": Variável \"" + valor.resultado + "\" precisa ser declarada antes de ser usada.");
+                throw new IllegalArgumentException("Erro", null);
+                //return null;
 		    }            
             if(!identificadores.get(valor.resultado).estaAtribuido){
-                System.out.println(String.format("\n\nErro: Variável \"" + valor.resultado + "\" precisa ser atribuida antes de ser usada."));
-                return null;
+                System.out.println (String.format("\n\nErro na linha "+left.toString()+" coluna "+right.toString()+": Variável \"" + valor.resultado + "\" precisa ser atribuida antes de ser usada."));
+                throw new IllegalArgumentException("Erro", null);
+                //return null;
             }
             tipo2 = identificadores.get(valor.resultado).tipo;
         }
@@ -51,20 +57,24 @@ public class AnalisadorSemantico {
             tipo2 = valor.tipoResultado;
         }
 
-        if(tipo1 != tipo2 && tipo1 != TipoVariavel.INT && tipo1 != TipoVariavel.FLOAT && tipo2 != TipoVariavel.INT && tipo2 != TipoVariavel.FLOAT){
+        if(tipo1 != tipo2 && (tipo1 == TipoVariavel.BOOL || tipo1 == TipoVariavel.CHAR || tipo2 == TipoVariavel.BOOL || tipo2 == TipoVariavel.CHAR)){
             switch(tipo1){  
                 case BOOL:
-                    System.out.println(String.format("\n\nErro: O tipo boolean da variável \"" + variavel + "\" só pode receber \"true\" ou \"false\" na atribuição"));
-                    break;
+                    System.out.println("\n\nErro na linha "+left.toString()+" coluna "+right.toString()+": O tipo boolean da variável \"" + variavel + "\" só pode receber \"true\" ou \"false\" na atribuição");
+                    throw new IllegalArgumentException("Erro", null);
+                    //break;
                 case INT:
-                    System.out.println(String.format("\n\nErro: O tipo inteiro da variável \"" + variavel + "\" só pode receber números inteiros na atribuição"));
-                    break;
+                    System.out.println(String.format("\n\nErro na linha "+left.toString()+" coluna "+right.toString()+": O tipo inteiro da variável \"" + variavel + "\" só pode receber números inteiros na atribuição"));
+                    throw new IllegalArgumentException("Erro", null);
+                    //break;
                 case FLOAT:
-                    System.out.println(String.format("\n\nErro: O tipo float da variável \"" + variavel + "\" só pode receber números decimais na atribuição"));
-                    break;
+                    System.out.println(String.format("\n\nErro na linha "+left.toString()+" coluna "+right.toString()+": O tipo float da variável \"" + variavel + "\" só pode receber números decimais na atribuição"));
+                    throw new IllegalArgumentException("Erro", null);
+                    //break;
                 case CHAR:
-                    System.out.println(String.format("\n\nErro: O tipo char da variável \"" + variavel + "\" só pode receber um caractere por vez"));
-                    break;
+                    System.out.println(String.format("\n\nErro na linha "+left.toString()+" coluna "+right.toString()+": O tipo char da variável \"" + variavel + "\" só pode receber um caractere por vez"));
+                    throw new IllegalArgumentException("Erro", null);
+                    //break;
             } 
         }        
 
@@ -76,17 +86,19 @@ public class AnalisadorSemantico {
     //testa uma expressão, se não for valida vai imprimir o erro e retornar nulo
     //se for valida cria uma expressão nova combinando os duas expressões que foram comparadas
     //e definindo como tipo numerico se for uma expressão +-*/ e tipo bool para qualquer outro operador
-	public Expressao testarExpressao(Expressao var1, Expressao var2, String operador) {
+	public Expressao testarExpressao(Expressao var1, Expressao var2, String operador, Object left1, Object right1, Object left2, Object right2) {
         TipoVariavel tipo1;
         TipoVariavel tipo2;
         if(var1.ehVariavel){
             if(!identificadores.containsKey(var1.resultado)) {
-                System.out.println("\n\nErro: Variável \"" + var1.resultado + "\" precisa ser declarada antes de ser usada.");
-                return null;
+                System.out.println("\n\nErro na linha "+left1.toString()+" coluna "+right1.toString()+": Variável \"" + var1.resultado + "\" precisa ser declarada antes de ser usada.");
+                throw new IllegalArgumentException("Erro", null);
+                //return null;
 		    }            
             if(!identificadores.get(var1.resultado).estaAtribuido){
-                System.out.println(String.format("\n\nErro: Variável \"" + var1.resultado + "\" precisa ser atribuida antes de ser usada."));
-                return null;
+                System.out.println(String.format("\n\nErro na linha "+left1.toString()+" coluna "+right1.toString()+": Variável \"" + var1.resultado + "\" precisa ser atribuida antes de ser usada."));
+                throw new IllegalArgumentException("Erro", null);
+                //return null;
             }
             tipo1 = identificadores.get(var1.resultado).tipo;
         }
@@ -95,12 +107,14 @@ public class AnalisadorSemantico {
         }
 		if(var2.ehVariavel){
             if(!identificadores.containsKey(var2.resultado)){
-                System.out.println("\n\nErro: Variável \"" + var2.resultado + "\" precisa ser declarada antes de ser usada.");
-                return null;
+                System.out.println("\n\nErro na linha "+left2.toString()+" coluna "+right2.toString()+": Variável \"" + var2.resultado + "\" precisa ser declarada antes de ser usada.");
+                throw new IllegalArgumentException("Erro", null);
+                //return null;
 		    }            
             if(!identificadores.get(var2.resultado).estaAtribuido){
-                System.out.println(String.format("\n\nErro: Variável \"" + var2.resultado + "\" precisa ser atribuida antes de ser usada."));
-                return null;
+                System.out.println(String.format("\n\nErro na linha "+left2.toString()+" coluna "+right2.toString()+": Variável \"" + var2.resultado + "\" precisa ser atribuida antes de ser usada."));
+                throw new IllegalArgumentException("Erro", null);
+                //return null;
             }
             tipo2 = identificadores.get(var2.resultado).tipo;
         }
@@ -119,12 +133,14 @@ public class AnalisadorSemantico {
             case "*":
             case "/":
                 if(tipo1 == TipoVariavel.CHAR || tipo2 == TipoVariavel.CHAR){
-                    System.out.println("\n\nErro: Operadores aritméticos não podem ser executados com o tipo char");
-                    return null;
+                    System.out.println("\n\nErro na linha "+left1.toString()+" coluna "+right1.toString()+": Operadores aritméticos não podem ser executados com o tipo char");
+                    throw new IllegalArgumentException("Erro", null);
+                    //return null;
                 }
                 if(tipo1 == TipoVariavel.BOOL || tipo2 == TipoVariavel.BOOL){
-                    System.out.println("\n\nErro: Operadores aritméticos não podem ser executados com o tipo bool");
-                    return null;
+                    System.out.println("\n\nErro na linha "+left1.toString()+" coluna "+right1.toString()+": Operadores aritméticos não podem ser executados com o tipo bool");
+                    throw new IllegalArgumentException("Erro", null);
+                    //return null;
                 }
                 if(operador == "+" || operador == "-" || operador == "*" || operador == "/"){
                     return new Expressao(var1.resultado + operador + var2.resultado,tipo1,false);
@@ -133,16 +149,18 @@ public class AnalisadorSemantico {
             case "==":
             case "!=":
                 if(tipo1 != tipo2){
-                    System.out.println("\n\nErro: É apenas possivel comparar variáveis de mesmo tipo(" + tipo1 + " != " + tipo2 +")");
-                    return null;
+                    System.out.println("\n\nErro na linha "+left1.toString()+" coluna "+right1.toString()+": É apenas possivel comparar variáveis de mesmo tipo(" + tipo1 + " != " + tipo2 +")");
+                    throw new IllegalArgumentException("Erro", null);
+                    //return null;
                 }
                 break;
             case "&&":
             case "||":
             case "^":
                 if(tipo1 != TipoVariavel.BOOL || tipo2 != TipoVariavel.BOOL){
-                    System.out.println("\n\nErro: operadores lógicos só podem ser realizados entre tipos booleanos");
-                    return null;
+                    System.out.println("\n\nErro na linha "+left1.toString()+" coluna "+right1.toString()+": operadores lógicos só podem ser realizados entre tipos booleanos");
+                    throw new IllegalArgumentException("Erro", null);
+                    //return null;
                 }
                 break;
         }
